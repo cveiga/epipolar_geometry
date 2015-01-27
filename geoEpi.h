@@ -24,8 +24,11 @@ class GeoEpi{
       CvMat* getP1() const;
       CvMat* getP2() const;
       double getCorrLines(unsigned short int, unsigned short int) const;
+      double getFunMat(unsigned short int, unsigned short int) const;
       
-      CvMat fundMat();
-      void GeoEpi::directionLines(unsigned short int);
+      void fundMat();
+      void directionLines(unsigned short int);
+      
+      void printFundMat() const;
 };
 #endif

@@ -1,27 +1,19 @@
 #include <cstdlib>
-//#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-//#include <cv.h>
 #include <highgui.h>
-#include <windows.h>
-//#include <vector>
 #include "geoEpi.h"
-//#include "opencv2/opencv.hpp"
-//#include <opencv2/opencv.hpp>
 
 //using namespace cv;
 
 
 
-//GeoEpi prueba;
 CvScalar _color2 = CV_RGB(0,255,0);
 bool _rojo = false;
 IplImage *_img;
 
 void drawLine(CvPoint p1, CvPoint p2);
-void imprimeVector(CvPoint points[], unsigned short int cont);
 
 int main(int argc, char *argv[])
 {
@@ -69,16 +61,17 @@ int main(int argc, char *argv[])
     }                          
     fich.close();
     
-    //imprimeVector(points1, cont);
     GeoEpi miGE(cont/2); 
-    //GeoEpi miGE(cont/2, points1, points2);
+    
     miGE.setDataP1(points1);
     miGE.setDataP2(points2);
      
     //Generamos la matriz fundamental
-    CvMat fundMatr = miGE.fundMat();  
+    miGE.fundMat();  
+    miGE.printFundMat();
+    
     /**Especificamos la dirección para calcular las lineas epipolares
-    *  parametro, numero de imágenes
+    * \parametro 2   numero de imágenes
     */
     miGE.directionLines(2);
     
@@ -102,7 +95,6 @@ int main(int argc, char *argv[])
     
     cvDestroyWindow("MI_VENTANA");
     
-    
     //std::cout << "LLEGA??" << std::endl; 
         
     system("PAUSE");
@@ -113,7 +105,7 @@ int main(int argc, char *argv[])
 
 
 void drawLine(CvPoint p1, CvPoint p2){
-       cvLine(_img, p1, p2, _color2);        
+       cvLine(_img, p1, p2, _color2);       
                    if (_rojo){
                       _color2 = CV_RGB(0, 255, 0);
                       _rojo = false;
@@ -122,15 +114,4 @@ void drawLine(CvPoint p1, CvPoint p2){
                       _color2 = CV_RGB(255, 0, 0);
                       _rojo = true;
                    }
-}
-
-
-
-
-void imprimeVector(CvPoint points[], unsigned short int cont){
-     for (int i = 0; i < cont; i++){
-         std::cout << "PUNTO Nº " << i << ": " << std::endl;
-         std::cout << "\t" << points[i].x << std::endl;
-         std::cout << "\t" << points[i].y << std::endl;
-     }
 }

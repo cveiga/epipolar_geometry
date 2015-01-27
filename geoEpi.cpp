@@ -1,7 +1,7 @@
 #include <iostream>
-#include <string>
-#include <vector>
+
 #include "geoEpi.h"
+
 
 
 GeoEpi::GeoEpi(unsigned short int tam){
@@ -13,10 +13,11 @@ GeoEpi::GeoEpi(unsigned short int tam){
      points2 = cvCreateMat(2, this->tam, CV_32FC1);        
      
      status = cvCreateMat(1, this->tam, CV_32FC1);    
-     fundamental_matrix = cvCreateMat(3, 3, CV_32F);
+     fundamental_matrix = cvCreateMat(3, 3, CV_32FC1);
      
-     corrLines = cvCreateMat(3, this->tam, CV_32F);
+     corrLines = cvCreateMat(3, this->tam, CV_32FC1);
 }
+
 
 
 GeoEpi::GeoEpi(unsigned short int tam, CvPoint p1[], CvPoint p2[]){
@@ -27,6 +28,8 @@ GeoEpi::GeoEpi(unsigned short int tam, CvPoint p1[], CvPoint p2[]){
      std::cout << "OBJETO CREADO" << std::endl;
 }
 
+
+
 GeoEpi::~GeoEpi(){
     delete points1;
     delete points2;
@@ -35,15 +38,14 @@ GeoEpi::~GeoEpi(){
 }
 
 
+
 void GeoEpi::setDataP1(CvPoint point[]){
      for (int i = 0; i < tam; i++){
-         cvSetReal2D(points1, 0, i, point[i].x);    //static_cast<double>(point.x));
-         cvSetReal2D(points1, 1, i, point[i].y);    //static_cast<double>(point.x));
+         cvSetReal2D(points1, 0, i, point[i].x);
+         cvSetReal2D(points1, 1, i, point[i].y);
      }
-     //cvmSet(points1, 0, 0, static_cast<double>(point.x));   
-     //std::cout << "Tamaño del vector 1: " << sizeof(points1)/sizeof(CvMat*)-1 << std::endl;
-     //std::cout << "PUNTO 173: X = " << cvGetReal2D(points1, 0, 173) << ", Y = " << cvGetReal2D(points1, 1, 173) << std::endl;
 }
+
 
 
 void GeoEpi::setDataP2(CvPoint point[]){
@@ -54,9 +56,11 @@ void GeoEpi::setDataP2(CvPoint point[]){
 }
 
 
+
 CvMat* GeoEpi::getP1() const{
       return points1;      
 }
+
 
 
 CvMat* GeoEpi::getP2() const{
@@ -64,21 +68,46 @@ CvMat* GeoEpi::getP2() const{
 }
 
 
+
 double GeoEpi::getCorrLines(unsigned short int row, unsigned short int col) const{
       return cvmGet(corrLines, row, col);
 }
 
 
-CvMat GeoEpi::fundMat(){
-    if(cvFindFundamentalMat(points1, points2, fundamental_matrix, CV_FM_RANSAC, 15, 0.99, status))
+
+double GeoEpi::getFunMat(unsigned short int row, unsigned short int col) const{
+       return cvmGet(fundamental_matrix, row, col);
+}
+
+
+
+/** \parametro 15              desviación */
+void GeoEpi::fundMat(){
+    if(cvFindFundamentalMat(points1, points2, fundamental_matrix, CV_FM_RANSAC, 1, 0.99, status))
         std::cout << "Fundamental matrix was found" << std::endl;
     else
         std::cout << "Fundamental matrix was not found" << std::endl;
-        
-    return *fundamental_matrix;
 }
+
 
 
 void GeoEpi::directionLines(unsigned short int numImages){
      cvComputeCorrespondEpilines(points2, numImages, fundamental_matrix, corrLines);
+}
+
+
+
+
+void GeoEpi::printFundMat() const{
+     std::cout << "  FUNDAMENTAL MATRIX" << std::endl;
+     std::cout << "======================" << std::endl;
+     std::cout << "(";
+     
+     for (int i = 0; i < 3; i++){
+         for (int j = 0; j < 3; j++){
+             std::cout << cvmGet(fundamental_matrix, i, j) << ", ";
+         }
+         std::cout << std::endl;
+     }
+     std::cout << ")" << std::endl;
 }
