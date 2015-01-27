@@ -14,6 +14,8 @@ GeoEpi::GeoEpi(unsigned short int tam){
      
      status = cvCreateMat(1, this->tam, CV_32FC1);    
      fundamental_matrix = cvCreateMat(3, 3, CV_32F);
+     
+     corrLines = cvCreateMat(3, this->tam, CV_32F);
 }
 
 
@@ -62,9 +64,21 @@ CvMat* GeoEpi::getP2() const{
 }
 
 
-void GeoEpi::fundMat(){
+double GeoEpi::getCorrLines(unsigned short int row, unsigned short int col) const{
+      return cvmGet(corrLines, row, col);
+}
+
+
+CvMat GeoEpi::fundMat(){
     if(cvFindFundamentalMat(points1, points2, fundamental_matrix, CV_FM_RANSAC, 15, 0.99, status))
         std::cout << "Fundamental matrix was found" << std::endl;
     else
         std::cout << "Fundamental matrix was not found" << std::endl;
+        
+    return *fundamental_matrix;
+}
+
+
+void GeoEpi::directionLines(unsigned short int numImages){
+     cvComputeCorrespondEpilines(points2, numImages, fundamental_matrix, corrLines);
 }

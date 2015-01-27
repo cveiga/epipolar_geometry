@@ -1,12 +1,12 @@
 #include <cstdlib>
-#include <string.h>
+//#include <string.h>
 #include <iostream>
 #include <fstream>
 #include <stdio.h>
-#include <cv.h>
+//#include <cv.h>
 #include <highgui.h>
 #include <windows.h>
-#include <vector>
+//#include <vector>
 #include "geoEpi.h"
 //#include "opencv2/opencv.hpp"
 //#include <opencv2/opencv.hpp>
@@ -25,6 +25,7 @@ void imprimeVector(CvPoint points[], unsigned short int cont);
 
 int main(int argc, char *argv[])
 {
+    CvMat *epiLine;
     unsigned short int cont = 0;
     //std::string imageName("img/Art_Institute_of_Chicago_Lion_Statue.jpg");
     std::string imageName("img/parte1.jpg");
@@ -51,21 +52,13 @@ int main(int argc, char *argv[])
                        
                        miPunto.x = atoi(dato1.c_str());
                        miPunto.y = atoi(dato2.c_str());
-                       if(cont % 2 != 0){
+                       /*if(cont % 2 != 0){
                                //miPunto.x += 1384; 
                                drawLine(miPunto, previousPoint);                            
                        }
                        
-                       //inline CvPoint cvPoint(dato1, dato2);
-                       cvCircle(_img, miPunto, 1, color, 3);
-                       
-                       //fich.getline((float*)dato, sizeof(float));
-                       //if(fich.good()){
-                       //std::cout << "PUNTO: " << cont << "--> " << dato1 << ", " << dato2 << std::endl;
-                       //Sleep(100);
-                       //}
-                       //circle(img, Point(dato1, dato2), 1, CV_RGB(0,255,0));
-                       //circle(img, Point(dato1, dato2), 1, Scalar(255, 0, 0), 3);
+                       cvCircle(_img, miPunto, 1, color, 3);*/
+                                        
                        if(cont % 2 == 0)
                                points1[index1++] = miPunto;
                        else
@@ -81,8 +74,24 @@ int main(int argc, char *argv[])
     //GeoEpi miGE(cont/2, points1, points2);
     miGE.setDataP1(points1);
     miGE.setDataP2(points2);
+     
+    //Generamos la matriz fundamental
+    CvMat fundMatr = miGE.fundMat();  
+    /**Especificamos la dirección para calcular las lineas epipolares
+    *  parametro, numero de imágenes
+    */
+    miGE.directionLines(2);
     
-    /*cvSaveImage("img/resultado2.jpg", _img);
+    epiLine = cvCreateMat(1, 3, CV_32F);
+    
+    for (int i = 0; i < cont/2; i++){
+        for(int j = 0; j < 3; j++){
+            cvmSet(epiLine, 0, j, miGE.getCorrLines(j, i));
+        }    
+    }
+    
+    
+    cvSaveImage("img/resultado2.jpg", _img);
     
     cvNamedWindow("MI_VENTANA", CV_WINDOW_AUTOSIZE);
     cvShowImage("MI_VENTANA", _img);
@@ -91,18 +100,10 @@ int main(int argc, char *argv[])
     
     cvReleaseImage(&_img);
     
-    cvDestroyWindow("MI_VENTANA");*/
+    cvDestroyWindow("MI_VENTANA");
     
-    /*for (int i = 0; i < tam; i++){
-         cvSetReal2D(_p1, 0, i, point[i].x);
-         cvSetReal2D(, 1, i, point[i].y);
-     }*/
-   
-    //std::cout << "TAMAÑO: " << Point(img.size().width, img.size().height) << std::endl;
     
-    //_p1 = miGE.getP1;
-    //_p2 = miGE.getP2;
-    miGE.fundMat();    
+    //std::cout << "LLEGA??" << std::endl; 
         
     system("PAUSE");
     return EXIT_SUCCESS;

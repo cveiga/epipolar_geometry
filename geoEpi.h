@@ -8,8 +8,10 @@
 
 class GeoEpi{
   private:
-      CvMat *points1, *points2;
-      CvMat *status, *fundamental_matrix;
+      CvMat *points1, *points2;             //puntos
+      CvMat *status, *fundamental_matrix;   //matriz fundamental
+      CvMat *corrLines;                     //Lineas correspondientes
+      
       int tam;
   public:
       GeoEpi(){}
@@ -21,7 +23,9 @@ class GeoEpi{
       void setDataP2(CvPoint []);
       CvMat* getP1() const;
       CvMat* getP2() const;
+      double getCorrLines(unsigned short int, unsigned short int) const;
       
-      void fundMat();
+      CvMat fundMat();
+      void GeoEpi::directionLines(unsigned short int);
 };
 #endif
