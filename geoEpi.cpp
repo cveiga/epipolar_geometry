@@ -81,7 +81,7 @@ double GeoEpi::getFunMat(unsigned short int row, unsigned short int col) const{
 
 
 
-/** \parametro 15              desviación */
+/** \parametro 5              desviación */
 void GeoEpi::fundMat(){
     if(cvFindFundamentalMat(points1, points2, fundamental_matrix, CV_FM_RANSAC, 1, 0.99, status))
         std::cout << "Fundamental matrix was found" << std::endl;

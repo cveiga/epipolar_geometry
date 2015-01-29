@@ -14,6 +14,7 @@ bool _rojo = false;
 IplImage *_img;
 
 void drawLine(CvPoint p1, CvPoint p2);
+void CallBackMouse(int event, int x, int y, int flags, void *ptr);
 
 int main(int argc, char *argv[])
 {
@@ -83,10 +84,19 @@ int main(int argc, char *argv[])
         }    
     }
     
+    std::cout << cvmGet(epiLine, 0, 0) << std::endl;
+    std::cout << cvmGet(epiLine, 0, 1) << std::endl;
+    std::cout << cvmGet(epiLine, 0, 2) << std::endl;
     
     cvSaveImage("img/resultado2.jpg", _img);
     
     cvNamedWindow("MI_VENTANA", CV_WINDOW_AUTOSIZE);
+    
+    //capture muse click
+    CvPoint p;
+    cvSetMouseCallback("MI_VENTANA", CallBackMouse, &p);
+    //std::cout << "Left button of the mouse is clicked - position (" << p.x << ", " << p.y << ")" << std::endl;
+    
     cvShowImage("MI_VENTANA", _img);
     
     cvWaitKey(0);
@@ -114,4 +124,22 @@ void drawLine(CvPoint p1, CvPoint p2){
                       _color2 = CV_RGB(255, 0, 0);
                       _rojo = true;
                    }
+}
+
+
+
+/** Capturar los eventos del ratón
+* parametro event        tipo de evento que se generea (1 -> click izquierdo)
+* parametro x, y         coordenadas del punto
+* parametro flags
+* parametro ptr          punto de coordenadas
+*/
+void CallBackMouse(int event, int x, int y, int flags, void *ptr){
+     if (event == 1){
+         CvPoint *p = (CvPoint*)ptr;
+         p->x = x;
+         p->y = y;
+         
+         std::cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << std::endl;
+     }
 }
